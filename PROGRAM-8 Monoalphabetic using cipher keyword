@@ -1,39 +1,38 @@
-def generate_cipher_sequence(keyword):
-    keyword = keyword.upper()
+def generate_cipher(keyword):
+    keyword = ''.join(sorted(set(keyword), key=keyword.index))  # Remove duplicates while keeping the order
     alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-    cipher_sequence = ""
+    
     for char in keyword:
-        if char not in cipher_sequence:
-            cipher_sequence += char
-    for char in alphabet:
-        if char not in cipher_sequence:
-            cipher_sequence += char
-    return cipher_sequence
-def encrypt(plain_text, cipher_sequence):
-    plain_text = plain_text.upper()
+        alphabet = alphabet.replace(char, '')
+
+    return keyword + alphabet
+
+def encrypt(plain_text, cipher):
+    alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
     encrypted_text = ""
-    for char in plain_text:
-        if char.isalpha():
-            index = ord(char) - ord('A')
-            encrypted_text += cipher_sequence[index]
+    
+    for char in plain_text.upper():
+        if char in alphabet:
+            encrypted_text += cipher[alphabet.index(char)]
         else:
             encrypted_text += char
+            
     return encrypted_text
-def decrypt(encrypted_text, cipher_sequence):
-    encrypted_text = encrypted_text.upper()
-    decrypted_text = ""
-    for char in encrypted_text:
-        if char.isalpha():
-            index = cipher_sequence.index(char)
-            decrypted_text += chr(index + ord('A'))
-        else:
-            decrypted_text += char
-    return decrypted_text
-keyword = "CIPHER"
-cipher_sequence = generate_cipher_sequence(keyword)
-plain_text = "hello world"
-encrypted_text = encrypt(plain_text, cipher_sequence)
-decrypted_text = decrypt(encrypted_text, cipher_sequence)
-print("Plain Text:", plain_text)
-print("Cipher:", encrypted_text)
-print("Decrypted Text:", decrypted_text)
+
+def main():
+    keyword = "CIPHER"
+    cipher_alphabet = generate_cipher(keyword)
+    
+    print("plain:   ", " ".join("ABCDEFGHIJKLMNOPQRSTUVWXYZ"))
+    print("cipher:  ", " ".join(cipher_alphabet))
+    
+    text = input("\nEnter plaintext to encrypt: ")
+    encrypted_text = encrypt(text, cipher_alphabet)
+    print("Encrypted text:", encrypted_text)
+
+if __name__ == "__main__":
+    main()
+Enter plaintext to encrypt: hello world
+Encrypted text: BEJJM WMQJH
+
+
