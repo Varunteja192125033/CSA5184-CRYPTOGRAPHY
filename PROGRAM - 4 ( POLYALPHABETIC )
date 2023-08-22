@@ -2,54 +2,61 @@ Write a C program for polyalphabetic substitution cipher uses a separate monoalp
 substitution cipher for each successive letter of plaintext, depending on a key.
 
 PROGRAM :-
+def vigenere_encrypt(plaintext, keyword):
+    encrypted_text = ""
+    keyword_repeated = ''
+    keyword_index = 0
 
-class PolyalphabeticCipher:
-    def __init__(self, key):
-        self.key = key.upper()
+    # Repeat the keyword to match the length of the plaintext
+    for char in plaintext:
+        if char.isalpha():
+            keyword_repeated += keyword[keyword_index]
+            keyword_index = (keyword_index + 1) % len(keyword)
 
-    def extend_key(self, text):
-        extended_key = self.key
-        while len(extended_key) < len(text):
-            extended_key += self.key
-        return extended_key[:len(text)]
-
-    def encrypt(self, plaintext):
-        plaintext = plaintext.upper()
-        extended_key = self.extend_key(plaintext)
-        ciphertext = ''
-
-        for i in range(len(plaintext)):
-            if plaintext[i].isalpha():
-                shift = ord(extended_key[i]) - ord('A')
-                encrypted_char = chr(((ord(plaintext[i]) - ord('A') + shift) % 26) + ord('A'))
-                ciphertext += encrypted_char
+    # Encrypt the plaintext
+    for p, k in zip(plaintext, keyword_repeated):
+        if p.isalpha():
+            shift = ord(k.lower()) - ord('a')
+            if p.isupper():
+                encrypted_text += chr((ord(p) - ord('A') + shift) % 26 + ord('A'))
             else:
-                ciphertext += plaintext[i]
+                encrypted_text += chr((ord(p) - ord('a') + shift) % 26 + ord('a'))
+        else:
+            encrypted_text += p
 
-        return ciphertext
+    return encrypted_text
 
-    def decrypt(self, ciphertext):
-        ciphertext = ciphertext.upper()
-        extended_key = self.extend_key(ciphertext)
-        plaintext = ''
+def vigenere_decrypt(encrypted_text, keyword):
+    decrypted_text = ""
+    keyword_repeated = ''
+    keyword_index = 0
 
-        for i in range(len(ciphertext)):
-            if ciphertext[i].isalpha():
-                shift = ord(extended_key[i]) - ord('A')
-                decrypted_char = chr(((ord(ciphertext[i]) - ord('A') - shift) % 26) + ord('A'))
-                plaintext += decrypted_char
+    # Repeat the keyword to match the length of the encrypted_text
+    for char in encrypted_text:
+        if char.isalpha():
+            keyword_repeated += keyword[keyword_index]
+            keyword_index = (keyword_index + 1) % len(keyword)
+
+    # Decrypt the encrypted_text
+    for e, k in zip(encrypted_text, keyword_repeated):
+        if e.isalpha():
+            shift = ord(k.lower()) - ord('a')
+            if e.isupper():
+                decrypted_text += chr((ord(e) - ord('A') - shift) % 26 + ord('A'))
             else:
-                plaintext += ciphertext[i]
+                decrypted_text += chr((ord(e) - ord('a') - shift) % 26 + ord('a'))
+        else:
+            decrypted_text += e
 
-        return plaintext
+    return decrypted_text
 
-# Example usage
-key = "KEY"  # You can provide your own key here
-cipher = PolyalphabeticCipher(key)
+# Example usage:
+plaintext = "HELLO WORLD"
+keyword = "KEY"
+encrypted = vigenere_encrypt(plaintext, keyword)
+decrypted = vigenere_decrypt(encrypted, keyword)
+print(f"Original Text: {plaintext}")
+print(f"Encrypted Text: {encrypted}")
+print(f"Decrypted Text: {decrypted}")
 
-plaintext = "HELLO, WORLD!"
-encrypted_text = cipher.encrypt(plaintext)
-print("Encrypted:", encrypted_text)
 
-decrypted_text = cipher.decrypt(encrypted_text)
-print("Decrypted:", decrypted_text)
