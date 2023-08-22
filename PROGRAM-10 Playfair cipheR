@@ -48,4 +48,11 @@ matrix = [
 
 plaintext = "Must see you over Cadogan West. Coming at once."
 ciphertext = playfair_encrypt(matrix, plaintext)
-print("CipherText : ", ciphertext)
+print(ciphertext)
+
+
+UZTBDLGZPNNWLGTGTUEROVLDBDUHFPERHWQSRZ
+
+
+
+
