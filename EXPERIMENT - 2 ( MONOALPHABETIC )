@@ -2,46 +2,28 @@
 so that each letter of the plaintext alphabet maps to a single unique letter of the ciphertext alphabet.
 
 PROGRAM :-
-
-class MonoalphabeticCipher:
-    def __init__(self, key=None):
-        if key:
-            self.key = key.upper()
+def monoalphabetic_substitution(text, substitution_key):
+    result = []
+    for char in text:
+        if char.isalpha():
+            shift = 65 if char.isupper() else 97
+            index = ord(char) - shift
+            encrypted_char = substitution_key[index]
+            result.append(encrypted_char)
         else:
-            self.key = 'ZYXWVUTSRQPONMLKJIHGFEDCBA'  # Default key as reverse alphabet
+            result.append(char)
+    return ''.join(result)
 
-    def encrypt(self, plaintext):
-        plaintext = plaintext.upper()
-        ciphertext = ''
+def main():
+    substitution_key = "QWERTYUIOPASDFGHJKLZXCVBNM"  # Example substitution key
+    text = input("Enter the text: ")
 
-        for char in plaintext:
-            if char.isalpha():
-                idx = ord(char) - ord('A')
-                ciphertext += self.key[idx]
-            else:
-                ciphertext += char
+    encrypted_text = monoalphabetic_substitution(text, substitution_key)
+    print("Encrypted text:", encrypted_text)
 
-        return ciphertext
+if __name__ == "__main__":
+    main()
+#output
+Enter the text: helloworld
+Encrypted text: ITSSGVGKSR
 
-    def decrypt(self, ciphertext):
-        plaintext = ''
-
-        for char in ciphertext:
-            if char.isalpha():
-                idx = self.key.index(char)
-                plaintext += chr(idx + ord('A'))
-            else:
-                plaintext += char
-
-        return plaintext
-
-# Example usage
-key = "KJFABSWVURMTOHECXDYPLQGNIZ"  # You can provide your own key here
-cipher = MonoalphabeticCipher(key)
-
-plaintext = input("Enter the text:")
-encrypted_text = cipher.encrypt(plaintext)
-print("Encrypted:", encrypted_text)
-
-decrypted_text = cipher.decrypt(encrypted_text)
-print("Decrypted:", decrypted_text)
