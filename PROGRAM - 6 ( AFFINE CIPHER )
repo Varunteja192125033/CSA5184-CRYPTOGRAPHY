@@ -2,11 +2,19 @@ Write a C program for ciphertext has been generated with an affine cipher. The m
 and the second most frequent letter of the ciphertext is “U.”Break this code.
 
 PROGRAM :-
-
-def gcd(a, b):
-    while b:
-        a, b = b, a % b
-    return a
+def affine_decrypt(ciphertext, a, b):
+    plaintext = ""
+    for char in ciphertext:
+        if char.isalpha():
+            if char.isupper():
+                P = (mod_inverse(a, 26) * (ord(char) - ord('A') - b)) % 26
+                plaintext += chr(P + ord('A'))
+            else:
+                P = (mod_inverse(a, 26) * (ord(char) - ord('a') - b)) % 26
+                plaintext += chr(P + ord('a'))
+        else:
+            plaintext += char
+    return plaintext
 
 def mod_inverse(a, m):
     for i in range(1, m):
@@ -14,36 +22,33 @@ def mod_inverse(a, m):
             return i
     return None
 
-def affine_decrypt(ciphertext, a, b):
-    mod_inv = mod_inverse(a, 26)
-    if mod_inv is None:
-        return "Error: 'a' value is not valid (no modular inverse exists)"
+def break_affine(ciphertext):
+    E = 4
+    T = 19
+    B = ord('B') - ord('A')
+    U = ord('U') - ord('A')
 
-    decryption = ""
+    valid_as = [1, 3, 5, 7, 9, 11, 15, 17, 19, 21, 23, 25]
 
-    for char in ciphertext:
-        if char.isalpha():
-            shift = ord('A') if char.isupper() else ord('a')
-            decrypted_char = chr(((mod_inv * (ord(char) - shift - b)) % 26) + shift)
-            decryption += decrypted_char
-        else:
-            decryption += char
+    potential_keys = []
 
-    return decryption
+    for a in valid_as:
+        b_B = (B - a * E) % 26
+        b_U = (U - a * T) % 26
 
-ciphertext = "BUUKWZB BUBUBU"
-most_frequent = "B"
-second_most_frequent = "U"
+        if b_B == b_U:
+            potential_keys.append((a, b_B))
 
-# Calculate the key values a and b
-# In an affine cipher, a must be coprime to 26 (modular inverse exists)
-# To find b, we can use the fact that E(a, p) - E(a, q) = a(p - q) mod 26
-# Since we know B decrypts to 'E' and U decrypts to 'T', we can use these equations
-a = (ord(second_most_frequent) - ord(most_frequent)) * mod_inverse(ord('T') - ord('E'), 26) % 26
+    for (a, b) in potential_keys:
+        decrypted_text = affine_decrypt(ciphertext, a, b)
+        print(f"Key (a={a}, b={b}): {decrypted_text}")
 
-# Using a, we can find b using one of the ciphertext letters
-b = (ord(second_most_frequent) - a * ord('T') - ord('E')) % 26
+ciphertext = "YOUR_CIPHERTEXT_HERE"
+break_affine(ciphertext)
+Key (a=3, b=15): DRTS_NPAGFSKFUK_GFSF
 
-decrypted_message = affine_decrypt(ciphertext, a, b)
-print("Decrypted Message:")
-print(decrypted_message)
+
+   
+
+
+
